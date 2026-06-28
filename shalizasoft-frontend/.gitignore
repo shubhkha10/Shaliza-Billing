@@ -1,0 +1,14 @@
+# Backend
+shalizasoft-backend/node_modules
+shalizasoft-backend/.env
+
+# Frontend
+shalizasoft-frontend/node_modules
+shalizasoft-frontend/build
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

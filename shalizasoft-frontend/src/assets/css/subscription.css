@@ -1,0 +1,60 @@
+.subscription-page {
+  max-width: 1100px;
+  margin: auto;
+  padding: 40px;
+}
+
+.subscription-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.plan-grid {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.plan-card {
+  width: 320px;
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.plan-card h2 {
+  margin-bottom: 15px;
+}
+
+.plan-price {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2563eb;
+  margin-bottom: 20px;
+}
+
+.plan-card ul {
+  padding-left: 20px;
+}
+
+.plan-card li {
+  margin-bottom: 10px;
+}
+
+.plan-btn {
+  width: 100%;
+  margin-top: 20px;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.premium-card {
+  border: 3px solid #2563eb;
+}

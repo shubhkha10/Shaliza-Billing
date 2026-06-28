@@ -1,0 +1,118 @@
+/* PAGE BACKGROUND */
+.page-container {
+  padding: 20px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* TITLE */
+.page-container h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #111827;
+}
+
+/* GRID LAYOUTS */
+.reports-grid,
+.charts-grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* TOP CARDS */
+.reports-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* CHART GRID */
+.charts-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 25px;
+}
+
+/* CARD DESIGN */
+.card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* CARD HEADINGS */
+.card h3 {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+/* CARD VALUES */
+.card h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #111827;
+}
+
+/* MARGIN TOP */
+.mt-20 {
+  margin-top: 20px;
+}
+
+/* TABLE */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.report-table th {
+  background: #2563eb;
+  color: white;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.report-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+/* HOVER EFFECT */
+.report-table tr:hover {
+  background: #f3f4f6;
+}
+
+/* PIE CHART FIX (VERY IMPORTANT) */
+.recharts-text,
+.recharts-pie-label-text {
+  fill: #111827 !important;
+  font-size: 12px !important;
+}
+
+/* LEGEND FIX */
+.recharts-legend-item-text {
+  color: #111827 !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .reports-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.recharts-pie-label-text {
+  font-size: 12px !important;
+  font-weight: 600;
+  fill: #111827 !important;
+}
+
+.recharts-tooltip-wrapper {
+  font-size: 13px;
+}

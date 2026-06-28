@@ -1,0 +1,184 @@
+/* ========== BASE ========== */
+.billing-container {
+  padding: 24px;
+  background: #f6f7fb;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* ========== HEADER ========== */
+.dashboard-header {
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.dashboard-header p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ========== STATS GRID ========== */
+.billing-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: 20px;
+}
+
+/* ========== STAT CARDS ========== */
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.stat-card h3 {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.stat-card h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* revenue highlight */
+.stat-card.revenue {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+}
+
+.stat-card.revenue h2,
+.stat-card.revenue h3 {
+  color: white;
+}
+
+/* top accent line */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg, #3b82f6, #9333ea);
+}
+
+/* ========== GRID ========== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+/* ========== CARDS ========== */
+.dashboard-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: auto;
+}
+
+.dashboard-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+/* ========== TABLE ========== */
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.invoice-table th {
+  text-align: left;
+  padding: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.invoice-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  white-space: nowrap;
+}
+
+.invoice-table tr:hover {
+  background: #f9fafb;
+}
+
+/* ========== LOW STOCK ITEMS ========== */
+.stock-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #f9fafb;
+  transition: 0.2s;
+}
+
+.stock-item:hover {
+  background: #eef2ff;
+}
+
+.stock-item strong {
+  color: #ef4444;
+}
+
+/* ========== LOADING STATE ========== */
+.billing-container h2 {
+  color: #111827;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1000px) {
+  .billing-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .billing-container {
+    padding: 14px;
+  }
+
+  .billing-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header h1 {
+    font-size: 22px;
+  }
+
+  .stat-card h2 {
+    font-size: 22px;
+  }
+}
