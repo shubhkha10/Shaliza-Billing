@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { evaluate } from "mathjs";
 import "../assets/css/calculator.css";
 
 function Calculator() {
@@ -17,7 +18,7 @@ function Calculator() {
   const clear = () => setDisplay("0");
    const calculate = () => {
   try {
-    const result = Function("return " + display)();
+    const result = evaluate(display).toString();
     setHistory([`${display} = ${result}`, ...history]);
     setDisplay(result);
   } catch {
