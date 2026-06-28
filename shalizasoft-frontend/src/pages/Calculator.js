@@ -1,5 +1,4 @@
 import { useState } from "react";
-const result = eval(display).toString();
 import "../assets/css/calculator.css";
 
 function Calculator() {
@@ -16,16 +15,15 @@ function Calculator() {
   };
 
   const clear = () => setDisplay("0");
-  const calculate = () => {
+   const calculate = () => {
   try {
-    const result = evaluate(display).toString();
+    const result = Function("return " + display)();
     setHistory([`${display} = ${result}`, ...history]);
     setDisplay(result);
   } catch {
     setDisplay("Error");
   }
 };
- 
 
   // =========================
   // GST
