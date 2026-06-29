@@ -38,7 +38,8 @@ app.use((req, res, next) => {
 // =========================
 db.query("SELECT 1", (err) => {
   if (err) {
-    console.log("❌ DB Connection Failed:", err.message);
+    console.error("❌ DB Connection Failed:");
+console.error(err);
   } else {
     console.log("✅ DB Connected Successfully");
   }
