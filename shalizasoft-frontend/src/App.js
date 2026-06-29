@@ -36,6 +36,7 @@ import TermsConditions from "./pages/TermsCondition";
 import RefundPolicy from "./pages/RefundPolicy";
 import Help from "./pages/Help";
 import axios from "axios";
+import API from "./config/api";
 
 // axios.defaults.baseURL = "https://shaliza-billing.onrender.com/api";
 
