@@ -2,10 +2,17 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const db = require("../config/db");
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// IMPORTANT: lazy initialization (fix crash)
+const getRazorpay = () => {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+    throw new Error("Razorpay env variables missing");
+  }
+
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+};
 
 // ===================================
 // CREATE ORDER
@@ -21,7 +28,9 @@ exports.createOrder = async (req, res) => {
       amount = 299900;
     }
 
-    const order = await razorpay.orders.create({
+   const razorpay = getRazorpay();
+
+const order = await razorpay.orders.create({
       amount,
       currency: "INR",
       receipt: "receipt_" + Date.now(),
@@ -306,4 +315,36 @@ exports.getPaymentSummary = async (req, res) => {
       message: "Failed to fetch summary",
     });
   }
-};
+}; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

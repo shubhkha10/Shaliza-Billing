@@ -1,43 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const path = require("path");
 
 const db = require("./config/db");
 
-console.log("SERVER FILE LOADED");
+console.log("🚀 SERVER FILE LOADED");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
-const path = require("path");
 
-
-// ROUTES
-const authRoutes = require("./routes/authRoutes");
-const customerRoutes = require("./routes/customerRoutes");
-const invoiceRoutes = require("./routes/invoiceRoutes");
-const dashboardRoutes = require("./routes/dashboardRoutes");
-const productRoutes = require("./routes/productRoutes");
-const pdfRoutes = require("./routes/pdfRoutes");
-const reportRoutes = require("./routes/reportRoutes");
-const settingsRoutes = require("./routes/settingsRoutes");
-const inventoryRoutes = require("./routes/inventoryRoutes");
-const billingRoutes =
-  require("./routes/billingRoutes");
-  const subscriptionRoutes =
-  require("./routes/subscriptionRoutes");
-  const contactRoutes = require("./routes/contactRoutes");
-
-
-
-
+// =========================
 // MIDDLEWARE
-app.use(cors());
-app.use(express.json());
+// =========================
+
+// Allow frontend access (production safe)
 app.use(
-"/uploads",
-express.static("uploads")
+  cors({
+    origin: "*", // later you can replace with your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
 );
 
+app.use(express.json());
+
+// FIXED static path (production safe)
+app.use("/uploads", express.static(path.resolve("uploads")));
 
 // REQUEST LOGGER
 app.use((req, res, next) => {
@@ -45,32 +33,58 @@ app.use((req, res, next) => {
   next();
 });
 
+// =========================
+// DB CHECK (IMPORTANT)
+// =========================
+db.query("SELECT 1", (err) => {
+  if (err) {
+    console.log("❌ DB Connection Failed:", err.message);
+  } else {
+    console.log("✅ DB Connected Successfully");
+  }
+});
+
+// =========================
 // HEALTH CHECK
+// =========================
 app.get("/", (req, res) => {
-  res.send("ShalizaSoft Backend Running");
+  res.send("ShalizaSoft Backend Running 🚀");
 });
 
 app.get("/hello", (req, res) => {
   res.send("Hello Backend");
 });
 
-// API ROUTES
-app.use("/api/auth", authRoutes);
-app.use("/api/customers", customerRoutes);
-app.use("/api/invoices", invoiceRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/pdf", pdfRoutes);
-app.use("/api/reports", reportRoutes);
-app.use("/api/settings", settingsRoutes);
-app.use("/api/inventory", inventoryRoutes);
-app.use("/api/billing", billingRoutes);
-app.use(
-  "/api/subscription",
-  subscriptionRoutes
-);
-app.use("/api/contact", contactRoutes);
+// =========================
+// ROUTES
+// =========================
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/customers", require("./routes/customerRoutes"));
+app.use("/api/invoices", require("./routes/invoiceRoutes"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/pdf", require("./routes/pdfRoutes"));
+app.use("/api/reports", require("./routes/reportRoutes"));
+app.use("/api/settings", require("./routes/settingsRoutes"));
+app.use("/api/inventory", require("./routes/inventoryRoutes"));
+app.use("/api/billing", require("./routes/billingRoutes"));
+app.use("/api/subscription", require("./routes/subscriptionRoutes"));
+app.use("/api/contact", require("./routes/contactRoutes"));
+
+// =========================
+// ERROR HANDLER (IMPORTANT)
+// =========================
+app.use((err, req, res, next) => {
+  console.error("🔥 ERROR:", err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Server Error",
+  });
+});
+
+// =========================
 // START SERVER
+// =========================
 app.listen(PORT, () => {
-  console.log(`Server Running On Port ${PORT}`);
+  console.log(`✅ Server Running On Port ${PORT}`);
 });
