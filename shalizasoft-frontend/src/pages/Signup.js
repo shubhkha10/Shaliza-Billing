@@ -25,7 +25,12 @@ function Signup() {
       navigate("/login");
     } catch (err) {
       console.log(err);
-      alert("Signup Failed");
+
+      if (err.response?.data?.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("Signup Failed");
+      }
     }
   };
 
@@ -33,16 +38,95 @@ function Signup() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>Create Account</h1>
+        <p>Start your SaaS billing journey</p>
 
         <form onSubmit={handleSignup}>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input value={password} onChange={(e) => setPassword(e.target.value)} />
-          <button type="submit">Create Account</button>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit">
+            Create Account
+          </button>
         </form>
+
+        <p className="bottom-text">
+          Already have an account?{" "}
+          <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );
 }
 
 export default Signup;
+
+
+
+
+
+
+
+
+
+
+
+
+    // <div className="auth-page">
+
+    //   <div className="auth-card">
+
+    //     <h1>Create Account</h1>
+    //     <p>Start your SaaS billing journey</p>
+
+    //     <form onSubmit={handleSignup}>
+
+    //       <input
+    //         type="text"
+    //         placeholder="Full Name"
+    //         value={name}
+    //         onChange={(e) => setName(e.target.value)}
+    //       />
+
+    //       <input
+    //         type="email"
+    //         placeholder="Email Address"
+    //         value={email}
+    //         onChange={(e) => setEmail(e.target.value)}
+    //       />
+
+    //       <input
+    //         type="password"
+    //         placeholder="Password"
+    //         value={password}
+    //         onChange={(e) => setPassword(e.target.value)}
+    //       />
+
+    //       <button type="submit">Create Account</button>
+
+    //     </form>
+
+    //     <p className="bottom-text">
+    //       Already have an account? <Link to="/login">Login</Link>
+    //     </p>
+  
