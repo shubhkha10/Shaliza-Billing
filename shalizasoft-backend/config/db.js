@@ -1,10 +1,5 @@
 const mysql = require("mysql2");
 
-console.log("HOST:", process.env.MYSQLHOST);
-console.log("DATABASE:", process.env.MYSQLDATABASE);
-console.log("USER:", process.env.MYSQLUSER);
-console.log("PORT:", process.env.MYSQLPORT);
-
 const db = mysql.createPool({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
@@ -13,6 +8,7 @@ const db = mysql.createPool({
   port: Number(process.env.MYSQLPORT),
   waitForConnections: true,
   connectionLimit: 10,
+  queueLimit: 0,
 });
 
 module.exports = db;

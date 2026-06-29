@@ -95,72 +95,48 @@ message: error.message,
 exports.login = (req, res) => {
   const { email, password } = req.body;
 
-  console.log("========== LOGIN REQUEST ==========");
-  console.log("Email:", email);
+  console.log("LOGIN REQUEST:", email);
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
 
   db.query(
     "SELECT * FROM users WHERE email = ?",
     [email],
     async (err, results) => {
-      try {
-        if (err) {
-          console.error("DATABASE ERROR:");
-          console.error(err);
-          return res.status(500).json({
-            success: false,
-            error: err.message,
-          });
-        }
-
-        console.log("Users Found:", results.length);
-
-        if (results.length === 0) {
-          return res.status(401).json({
-            message: "User not found",
-          });
-        }
-
-        const user = results[0];
-
-        console.log("Checking password...");
-
-        const isMatch = await bcrypt.compare(
-          password,
-          user.password
-        );
-
-        if (!isMatch) {
-          return res.status(401).json({
-            message: "Invalid password",
-          });
-        }
-
-        console.log("Password matched");
-
-      
-
-        console.log("Login Success");
-
-        return res.json({
-          message: "Login Successful",
-          token,
-          user: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            subscription_type: user.subscription_type,
-            subscription_expiry: user.subscription_expiry,
-          },
-        });
-      } catch (error) {
-        console.error("LOGIN CRASH:");
-        console.error(error);
-
-        return res.status(500).json({
-          success: false,
-          error: error.message,
-        });
+      if (err) {
+        console.log("DB ERROR:", err);
+        return res.status(500).json({ message: err.message });
       }
+
+      if (results.length === 0) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      const user = results[0];
+
+      console.log("DB USER:", user.email);
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      console.log("PASSWORD MATCH:", isMatch);
+
+      if (!isMatch) {
+        return res.status(401).json({ message: "Wrong password" });
+      }
+
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      return res.json({
+        message: "Login Success",
+        token,
+        user,
+      });
     }
   );
 };
