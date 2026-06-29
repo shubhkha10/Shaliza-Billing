@@ -1,3 +1,3 @@
-const API = "https://shaliza-billing-l26x.vercel.app//api";
+const API = "https://shaliza-billing-production.up.railway.app/api";
 
 export default API;
