@@ -33,15 +33,60 @@ function Login() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>Welcome Back</h1>
-
+<p>Login to your billing dashboard</p>
         <form onSubmit={handleLogin}>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input  type="email"
+            placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input  type="password"
+            placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button type="submit">Login</button>
         </form>
+        <p className="bottom-text">
+          Don’t have account? <Link to="/signup">Sign up</Link>
+        </p>
+        <p style={{ marginTop: "10px" }}>
+  <Link to="/forgot-password">
+    Forgot Password?
+  </Link>
+</p>
       </div>
     </div>
   );
 }
 
 export default Login;
+
+{/* <div className="auth-card"> 
+
+        <h1>Welcome Back</h1>
+        <p>Login to your billing dashboard</p>
+
+        <form onSubmit={handleLogin}>
+
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button type="submit">Login</button>
+
+        </form>
+
+        <p className="bottom-text">
+          Don’t have account? <Link to="/signup">Sign up</Link>
+        </p>
+        <p style={{ marginTop: "10px" }}>
+  <Link to="/forgot-password">
+    Forgot Password?
+  </Link>
+</p> */}
+ 
