@@ -17,9 +17,7 @@ useEffect(() => {
 const fetchDashboard = async () => {
   try {
 
-    const res = await axios.get(
-      "http://localhost:5001/api/dashboard/stats",
-      {
+    const res = await axios.get(`${API}/dashboard/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,9 +34,7 @@ const fetchDashboard = async () => {
 const fetchPlan = async () => {
   try {
 
-    const res = await axios.get(
-      "http://localhost:5001/api/subscription/current",
-      {
+   const res = await axios.get(`${API}/subscription/current`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
