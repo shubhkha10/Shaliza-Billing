@@ -92,70 +92,78 @@ message: error.message,
 // ======================
 // LOGIN
 // ======================
-
 exports.login = (req, res) => {
-const { email, password } = req.body;
+  const { email, password } = req.body;
 
-db.query(
-"SELECT * FROM users WHERE email = ?",
-[email],
-async (err, results) => {
-if (err) {
-return res.status(500).json(err);
-}
+  console.log("========== LOGIN REQUEST ==========");
+  console.log("Email:", email);
 
+  db.query(
+    "SELECT * FROM users WHERE email = ?",
+    [email],
+    async (err, results) => {
+      try {
+        if (err) {
+          console.error("DATABASE ERROR:");
+          console.error(err);
+          return res.status(500).json({
+            success: false,
+            error: err.message,
+          });
+        }
 
-  if (results.length === 0) {
-    return res.status(401).json({
-      message: "User not found",
-    });
-  }
+        console.log("Users Found:", results.length);
 
-  const user = results[0];
+        if (results.length === 0) {
+          return res.status(401).json({
+            message: "User not found",
+          });
+        }
 
-  const isMatch = await bcrypt.compare(
-    password,
-    user.password
-  );
+        const user = results[0];
 
-  if (!isMatch) {
-    return res.status(401).json({
-      message: "Invalid password",
-    });
-  }
+        console.log("Checking password...");
 
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-    },
-    process.env.JWT_SECRET ||
-      "SECRET_KEY_123",
-    {
-      expiresIn: "1d",
+        const isMatch = await bcrypt.compare(
+          password,
+          user.password
+        );
+
+        if (!isMatch) {
+          return res.status(401).json({
+            message: "Invalid password",
+          });
+        }
+
+        console.log("Password matched");
+
+      
+
+        console.log("Login Success");
+
+        return res.json({
+          message: "Login Successful",
+          token,
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            subscription_type: user.subscription_type,
+            subscription_expiry: user.subscription_expiry,
+          },
+        });
+      } catch (error) {
+        console.error("LOGIN CRASH:");
+        console.error(error);
+
+        return res.status(500).json({
+          success: false,
+          error: error.message,
+        });
+      }
     }
   );
-
-  res.json({
-    message: "Login Successful",
-    token,
-
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      subscription_type:
-        user.subscription_type,
-      subscription_expiry:
-        user.subscription_expiry,
-    },
-  });
-}
-
-
-);
 };
-
 // ======================
 // FORGOT PASSWORD
 // ======================
