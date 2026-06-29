@@ -112,7 +112,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import API from "../config/api";
+import API from "../../config/api";
 import "../../assets/css/customers.css";
 import { useNavigate } from "react-router-dom";
 

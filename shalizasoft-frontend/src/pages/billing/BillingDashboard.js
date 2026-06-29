@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../../config/api";
 import "../../assets/css/billing.css";
 
 function BillingDashboard() {
@@ -16,20 +17,20 @@ function BillingDashboard() {
 
   const fetchDashboard = async () => {
     try {
+      const token = localStorage.getItem("token");
+
       const res = await axios.get(
-        "http://localhost:5001/api/billing/dashboard",
+        `${API}/billing/dashboard`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem(
-              "token"
-            )}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      setData(res.data);
+      setData(res.data || {});
     } catch (err) {
-      console.log(err);
+      console.log("Billing Dashboard Error:", err);
     } finally {
       setLoading(false);
     }
@@ -52,50 +53,39 @@ function BillingDashboard() {
 
       <div className="dashboard-header">
         <h1>📊 Billing Dashboard</h1>
-        <p>
-          Overview of your business performance
-        </p>
+        <p>Overview of your business performance</p>
       </div>
 
       <div className="billing-stats">
 
         <div className="stat-card">
           <h3>Total Customers</h3>
-          <h2>{data.totalCustomers}</h2>
+          <h2>{data.totalCustomers || 0}</h2>
         </div>
 
         <div className="stat-card">
           <h3>Total Products</h3>
-          <h2>{data.totalProducts}</h2>
+          <h2>{data.totalProducts || 0}</h2>
         </div>
 
         <div className="stat-card">
           <h3>Total Invoices</h3>
-          <h2>{data.totalInvoices}</h2>
+          <h2>{data.totalInvoices || 0}</h2>
         </div>
 
         <div className="stat-card revenue">
           <h3>Total Revenue</h3>
-          <h2>
-            ₹
-            {Number(
-              data.totalRevenue || 0
-            ).toLocaleString()}
-          </h2>
+          <h2>₹{Number(data.totalRevenue || 0).toLocaleString()}</h2>
         </div>
 
       </div>
 
       <div className="dashboard-grid">
 
-        {/* Recent Invoices */}
-
         <div className="dashboard-card">
-
           <h2>Recent Invoices</h2>
 
           <table className="invoice-table">
-
             <thead>
               <tr>
                 <th>Invoice</th>
@@ -106,91 +96,39 @@ function BillingDashboard() {
             </thead>
 
             <tbody>
-
-              {data.recentInvoices?.length >
-              0 ? (
-                data.recentInvoices.map(
-                  (invoice) => (
-                    <tr key={invoice.id}>
-                      <td>
-                        {
-                          invoice.invoice_number
-                        }
-                      </td>
-
-                      <td>
-                        {
-                          invoice.customer_name
-                        }
-                      </td>
-
-                      <td>
-                        {
-                          invoice.product_name
-                        }
-                      </td>
-
-                      <td>
-                        ₹{invoice.total}
-                      </td>
-                    </tr>
-                  )
-                )
+              {(data.recentInvoices || []).length > 0 ? (
+                data.recentInvoices.map((invoice) => (
+                  <tr key={invoice.id}>
+                    <td>{invoice.invoice_number}</td>
+                    <td>{invoice.customer_name}</td>
+                    <td>{invoice.product_name}</td>
+                    <td>₹{invoice.total}</td>
+                  </tr>
+                ))
               ) : (
                 <tr>
-                  <td
-                    colSpan="4"
-                    style={{
-                      textAlign:
-                        "center",
-                    }}
-                  >
+                  <td colSpan="4" style={{ textAlign: "center" }}>
                     No invoices found
                   </td>
                 </tr>
               )}
-
             </tbody>
-
           </table>
-
         </div>
 
-        {/* Low Stock */}
-
         <div className="dashboard-card">
-
           <h2>⚠ Low Stock Products</h2>
 
-          {data.lowStock?.length >
-          0 ? (
-            data.lowStock.map(
-              (product) => (
-                <div
-                  key={product.id}
-                  className="stock-item"
-                >
-                  <span>
-                    {
-                      product.product_name
-                    }
-                  </span>
-
-                  <strong>
-                    {
-                      product.stock_quantity
-                    }{" "}
-                    Left
-                  </strong>
-                </div>
-              )
-            )
+          {(data.lowStock || []).length > 0 ? (
+            data.lowStock.map((product) => (
+              <div key={product.id} className="stock-item">
+                <span>{product.product_name}</span>
+                <strong>{product.stock_quantity} Left</strong>
+              </div>
+            ))
           ) : (
-            <p>
-              No low stock products.
-            </p>
+            <p>No low stock products.</p>
           )}
-
         </div>
 
       </div>

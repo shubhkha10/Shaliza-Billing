@@ -129,7 +129,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import API from "../config/api";
+import API from "../../config/api";
 
 function Products() {
   const [products, setProducts] = useState([]);
