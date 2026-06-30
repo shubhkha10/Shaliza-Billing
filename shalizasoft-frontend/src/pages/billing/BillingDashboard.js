@@ -139,10 +139,7 @@
 
 // export default BillingDashboard;
 
-
-
 import { useEffect, useState } from "react";
-import axios from "axios";
 import API from "../../config/api";
 import "../../assets/css/billing.css";
 
@@ -162,14 +159,11 @@ function BillingDashboard() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axios.get(
-        `${API}/billing/dashboard`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await API.get("/billing/dashboard", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Billing Dashboard Response:", res.data);
 
