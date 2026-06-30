@@ -1,6 +1,92 @@
+// import API from "../config/api";
+// import { useState } from "react";
+// import axios from "axios";
+// import { useNavigate, Link } from "react-router-dom";
+// import "../assets/css/auth.css";
+
+// function Signup() {
+//   const navigate = useNavigate();
+
+//   const [name, setName] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   const handleSignup = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       await axios.post(`${API}/auth/register`, {
+//         name,
+//         email,
+//         password,
+//       });
+
+//       alert("Account Created Successfully");
+//       navigate("/login");
+//     } catch (err) {
+//       console.log(err);
+
+//       if (err.response?.data?.message) {
+//         alert(err.response.data.message);
+//       } else {
+//         alert("Signup Failed");
+//       }
+//     }
+//   };
+
+//   return (
+//     <div className="auth-page">
+//       <div className="auth-card">
+//         <h1>Create Account</h1>
+//         <p>Start your SaaS billing journey</p>
+
+//         <form onSubmit={handleSignup}>
+//           <input
+//             type="text"
+//             placeholder="Full Name"
+//             value={name}
+//             onChange={(e) => setName(e.target.value)}
+//             required
+//           />
+
+//           <input
+//             type="email"
+//             placeholder="Email Address"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//             required
+//           />
+
+//           <input
+//             type="password"
+//             placeholder="Password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//             required
+//           />
+
+//           <button type="submit">
+//             Create Account
+//           </button>
+//         </form>
+
+//         <p className="bottom-text">
+//           Already have an account?{" "}
+//           <Link to="/login">Login</Link>
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Signup;
+
+
+
+
+
 import API from "../config/api";
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../assets/css/auth.css";
 
@@ -15,7 +101,7 @@ function Signup() {
     e.preventDefault();
 
     try {
-      await axios.post(`${API}/auth/register`, {
+      await API.post("/auth/register", {
         name,
         email,
         password,
@@ -26,11 +112,7 @@ function Signup() {
     } catch (err) {
       console.log(err);
 
-      if (err.response?.data?.message) {
-        alert(err.response.data.message);
-      } else {
-        alert("Signup Failed");
-      }
+      alert(err.response?.data?.message || "Signup Failed");
     }
   };
 
@@ -38,23 +120,19 @@ function Signup() {
     <div className="auth-page">
       <div className="auth-card">
         <h1>Create Account</h1>
-        <p>Start your SaaS billing journey</p>
 
         <form onSubmit={handleSignup}>
           <input
-            type="text"
             placeholder="Full Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required
           />
 
           <input
             type="email"
-            placeholder="Email Address"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
 
           <input
@@ -62,17 +140,13 @@ function Signup() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
 
-          <button type="submit">
-            Create Account
-          </button>
+          <button type="submit">Create Account</button>
         </form>
 
-        <p className="bottom-text">
-          Already have an account?{" "}
-          <Link to="/login">Login</Link>
+        <p>
+          Already have account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>
@@ -80,12 +154,6 @@ function Signup() {
 }
 
 export default Signup;
-
-
-
-
-
-
 
 
 
