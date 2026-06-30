@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../assets/css/invoices.css";
+import API from "../../config/api";
 
 function Invoices() {
   const token = localStorage.getItem("token");
@@ -25,7 +26,7 @@ function Invoices() {
   // FETCH DATA
   // ==========================
   const fetchInvoices = async () => {
-    const res = await axios.get("http://localhost:5001/api/invoices", {
+    const res = await axios.get(`${API}/invoices`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -33,7 +34,7 @@ function Invoices() {
   };
 
   const fetchCustomers = async () => {
-    const res = await axios.get("http://localhost:5001/api/customers", {
+    const res = await axios.get(`${API}/customers`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -41,7 +42,7 @@ function Invoices() {
   };
 
   const fetchProducts = async () => {
-    const res = await axios.get("http://localhost:5001/api/products", {
+    const res = await axios.get(`${API}/products`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -110,7 +111,7 @@ function Invoices() {
 
     try {
       await axios.post(
-        "http://localhost:5001/api/invoices",
+        `${API}/invoices`,
         {
           customer_name: customer,
           items: cleanItems,
@@ -139,7 +140,7 @@ function Invoices() {
   // DELETE
   // ==========================
   const deleteInvoice = async (id) => {
-    await axios.delete(`http://localhost:5001/api/invoices/${id}`, {
+    await axios.delete(`${API}/invoices/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -151,7 +152,7 @@ function Invoices() {
   // ==========================
   const downloadPDF = async (id) => {
     const response = await axios.get(
-      `http://localhost:5001/api/pdf/invoice/${id}`,
+     `${API}/pdf/invoice/${id}` ,
       {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
