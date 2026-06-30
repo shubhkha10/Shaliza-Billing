@@ -11,19 +11,21 @@ function Inventory() {
   const [outSearch, setOutSearch] = useState("");
 
   const fetchInventory = async () => {
-    try {
-      const res = await API.get("/inventory", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+  try {
+    const res = await API.get("/inventory", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
 
-      setHistory(res.data.history);
-      setProducts(res.data.products);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    console.log("Inventory Response:", res.data);
+
+    setHistory(res.data.history);
+    setProducts(res.data.products);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   useEffect(() => {
     fetchInventory();
