@@ -258,10 +258,13 @@ import "../../assets/css/products.css";
 
 function Products() {
   const [products, setProducts] = useState([]);
+
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
+
   const [search, setSearch] = useState("");
+
   const [editId, setEditId] = useState(null);
 
   const token = localStorage.getItem("token");
@@ -269,7 +272,9 @@ function Products() {
   const fetchProducts = async () => {
     try {
       const res = await API.get("/products", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       setProducts(res.data);
@@ -284,7 +289,8 @@ function Products() {
 
   const addOrUpdateProduct = async () => {
     try {
-      if (!productName) return alert("Product Name Required");
+      if (!productName)
+        return alert("Product Name Required");
 
       const payload = {
         product_name: productName,
@@ -294,13 +300,17 @@ function Products() {
 
       if (editId) {
         await API.put(`/products/${editId}`, payload, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         alert("Product Updated");
       } else {
         await API.post("/products", payload, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         alert("Product Added");
@@ -317,10 +327,19 @@ function Products() {
     }
   };
 
+  const editProduct = (product) => {
+    setEditId(product.id);
+    setProductName(product.product_name);
+    setPrice(product.price);
+    setStockQuantity(product.stock_quantity);
+  };
+
   const deleteProduct = async (id) => {
     try {
       await API.delete(`/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       fetchProducts();
@@ -335,6 +354,7 @@ function Products() {
 
   return (
     <div className="product-container">
+
       <h1 className="title">📦 Product Management</h1>
 
       <input
@@ -345,19 +365,23 @@ function Products() {
       />
 
       <div className="product-form">
+
         <input
+          type="text"
           placeholder="Product Name"
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
         />
 
         <input
+          type="number"
           placeholder="Price"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
         />
 
         <input
+          type="number"
           placeholder="Stock"
           value={stockQuantity}
           onChange={(e) => setStockQuantity(e.target.value)}
@@ -366,58 +390,58 @@ function Products() {
         <button onClick={addOrUpdateProduct}>
           {editId ? "Update Product" : "Add Product"}
         </button>
+
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {filteredProducts.map((product) => (
-            <tr key={product.id}>
-              <td>{product.product_name}</td>
-              <td>₹{product.price}</td>
-              <td>{product.stock_quantity}</td>
-
-              <td>
-                {Number(product.stock_quantity) <= 5 ? (
-                  <span className="low-stock">⚠ Low Stock</span>
-                ) : (
-                  <span className="in-stock">✔ In Stock</span>
-                )}
-              </td>
-
-              <td>
-                <button
-                  className="edit-btn"
-                  onClick={() => {
-                    setEditId(product.id);
-                    setProductName(product.product_name);
-                    setPrice(product.price);
-                    setStockQuantity(product.stock_quantity);
-                  }}
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteProduct(product.id)}
-                >
-                  Delete
-                </button>
-              </td>
+      <div className="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {filteredProducts.map((product) => (
+              <tr key={product.id}>
+                <td>{product.product_name}</td>
+                <td>₹{product.price}</td>
+                <td>{product.stock_quantity}</td>
+
+                <td>
+                  {Number(product.stock_quantity) <= 5 ? (
+                    <span className="low-stock">⚠ Low Stock</span>
+                  ) : (
+                    <span className="in-stock">✔ In Stock</span>
+                  )}
+                </td>
+
+                <td>
+                  <button
+                    className="edit-btn"
+                    onClick={() => editProduct(product)}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteProduct(product.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
+
     </div>
   );
 }
