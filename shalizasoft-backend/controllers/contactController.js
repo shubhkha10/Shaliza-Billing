@@ -1,4 +1,4 @@
-const db = require("../config/db");
+// const db = require("../config/db");
 
 exports.sendContactMessage = (req, res) => {
   const userId = req.user?.id || null;
