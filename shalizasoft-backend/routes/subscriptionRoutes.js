@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const authMiddleware =
-  require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   createOrder,
@@ -12,34 +11,18 @@ const {
   getPaymentSummary,
 } = require("../controllers/subscriptionController");
 
-router.post(
-  "/create-order",
-  authMiddleware,
-  createOrder
-);
+// =====================
+// SUBSCRIPTION ROUTES
+// =====================
 
-router.post(
-  "/verify-payment",
-  authMiddleware,
-  verifyPayment
-);
+router.post("/create-order", authMiddleware, createOrder);
 
-router.get(
-  "/current",
-  authMiddleware,
-  getSubscription
-);
+router.post("/verify-payment", authMiddleware, verifyPayment);
 
-router.get(
-  "/payments",
-  authMiddleware,
-  getPaymentHistory
-);
+router.get("/current", authMiddleware, getSubscription);
 
-router.get(
-  "/summary",
-  authMiddleware,
-  getPaymentSummary
-);
+router.get("/payments", authMiddleware, getPaymentHistory);
+
+router.get("/summary", authMiddleware, getPaymentSummary);
 
 module.exports = router;

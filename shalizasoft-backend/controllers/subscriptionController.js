@@ -419,20 +419,19 @@
 //   }
 // }; 
 
-
-
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const db = require("../config/db");
 
 // ================================
-// Razorpay INIT (SAFE)
+// SAFE RAZORPAY INIT
 // ================================
 const getRazorpay = () => {
   const key_id = process.env.RAZORPAY_KEY_ID;
   const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
   if (!key_id || !key_secret) {
+    console.error("❌ Razorpay ENV missing");
     throw new Error("Razorpay environment variables missing");
   }
 
@@ -452,11 +451,7 @@ exports.createOrder = async (req, res) => {
 
     if (!plan) plan = "MONTHLY";
 
-    let amount = 29900; // ₹299
-
-    if (plan === "YEARLY") {
-      amount = 299900; // ₹2999
-    }
+    const amount = plan === "YEARLY" ? 299900 : 29900;
 
     const razorpay = getRazorpay();
 
@@ -472,14 +467,16 @@ exports.createOrder = async (req, res) => {
     });
 
     const [users] = await db.promise().query(
-      `SELECT name, email FROM users WHERE id = ?`,
+      "SELECT name, email FROM users WHERE id = ?",
       [userId]
     );
 
     const user = users[0] || {};
 
-    return res.json({
-      ...order,
+    return res.status(200).json({
+      id: order.id,
+      amount: order.amount,
+      currency: order.currency,
       key: process.env.RAZORPAY_KEY_ID,
       user: {
         name: user.name || "",
@@ -487,9 +484,8 @@ exports.createOrder = async (req, res) => {
         contact: "",
       },
     });
-
   } catch (error) {
-    console.log("CREATE ORDER ERROR:", error);
+    console.error("❌ CREATE ORDER ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Order creation failed",
@@ -504,6 +500,7 @@ exports.createOrder = async (req, res) => {
 exports.verifyPayment = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const razorpay = getRazorpay();
 
     const {
@@ -520,7 +517,6 @@ exports.verifyPayment = async (req, res) => {
       });
     }
 
-    // Signature check
     const generatedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
@@ -535,7 +531,6 @@ exports.verifyPayment = async (req, res) => {
 
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
-    // subscription logic
     const expiryDate = new Date();
 
     let amount = 299;
@@ -549,7 +544,7 @@ exports.verifyPayment = async (req, res) => {
       expiryDate.setMonth(expiryDate.getMonth() + 1);
     }
 
-    // update user
+    // update user subscription
     await db.promise().query(
       `
       UPDATE users
@@ -586,11 +581,11 @@ exports.verifyPayment = async (req, res) => {
         razorpay_signature,
         amount,
         planName,
-        (payment.currency || "INR").toUpperCase(),
+        payment.currency || "INR",
         payment.method || "",
         payment.email || "",
         payment.contact || "",
-        (payment.status || "SUCCESS").toUpperCase(),
+        payment.status || "SUCCESS",
         JSON.stringify(payment),
       ]
     );
@@ -600,10 +595,8 @@ exports.verifyPayment = async (req, res) => {
       message: "Premium Activated Successfully",
       expiry: expiryDate,
     });
-
   } catch (error) {
-    console.log("VERIFY PAYMENT ERROR:", error);
-
+    console.error("❌ VERIFY PAYMENT ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Payment verification failed",
@@ -620,7 +613,11 @@ exports.getSubscription = async (req, res) => {
     const userId = req.user.id;
 
     const [result] = await db.promise().query(
-      `SELECT subscription_type, subscription_expiry FROM users WHERE id=?`,
+      `
+      SELECT subscription_type, subscription_expiry
+      FROM users
+      WHERE id=?
+      `,
       [userId]
     );
 
@@ -631,7 +628,7 @@ exports.getSubscription = async (req, res) => {
       }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({
       message: "Failed to fetch subscription",
     });
@@ -656,7 +653,7 @@ exports.getPaymentHistory = async (req, res) => {
 
     return res.json(payments);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({
       message: "Failed to fetch payment history",
     });
@@ -695,39 +692,10 @@ exports.getPaymentSummary = async (req, res) => {
       subscription_type: subscription.subscription_type,
       subscription_expiry: subscription.subscription_expiry,
     });
-
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(500).json({
       message: "Failed to fetch summary",
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
