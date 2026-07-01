@@ -251,14 +251,13 @@
 // }
 
 // export default Products;
-
+  
 import { useEffect, useState } from "react";
 import API from "../../config/api";
 import "../../assets/css/products.css";
 
 function Products() {
   const [products, setProducts] = useState([]);
-
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [stockQuantity, setStockQuantity] = useState("");
@@ -336,15 +335,16 @@ function Products() {
 
   return (
     <div className="product-container">
-      <h1>📦 Product Management</h1>
+      <h1 className="title">📦 Product Management</h1>
 
       <input
+        className="search-bar"
         placeholder="Search Product..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
 
-      <div>
+      <div className="product-form">
         <input
           placeholder="Product Name"
           value={productName}
@@ -374,17 +374,43 @@ function Products() {
             <th>Name</th>
             <th>Price</th>
             <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {filteredProducts.map((p) => (
-            <tr key={p.id}>
-              <td>{p.product_name}</td>
-              <td>₹{p.price}</td>
-              <td>{p.stock_quantity}</td>
+          {filteredProducts.map((product) => (
+            <tr key={product.id}>
+              <td>{product.product_name}</td>
+              <td>₹{product.price}</td>
+              <td>{product.stock_quantity}</td>
+
               <td>
-                <button onClick={() => deleteProduct(p.id)}>
+                {Number(product.stock_quantity) <= 5 ? (
+                  <span className="low-stock">⚠ Low Stock</span>
+                ) : (
+                  <span className="in-stock">✔ In Stock</span>
+                )}
+              </td>
+
+              <td>
+                <button
+                  className="edit-btn"
+                  onClick={() => {
+                    setEditId(product.id);
+                    setProductName(product.product_name);
+                    setPrice(product.price);
+                    setStockQuantity(product.stock_quantity);
+                  }}
+                >
+                  Edit
+                </button>
+
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteProduct(product.id)}
+                >
                   Delete
                 </button>
               </td>

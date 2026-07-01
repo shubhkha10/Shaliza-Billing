@@ -153,7 +153,6 @@
 // );}
 
 // export default Reports;
-
 import { useEffect, useState } from "react";
 import API from "../../config/api";
 import "../../assets/css/reports.css";
@@ -188,9 +187,7 @@ function Reports() {
   const fetchReport = async () => {
     try {
       const res = await API.get("/reports/dashboard", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       setReport(res.data);
@@ -209,36 +206,50 @@ function Reports() {
     <div className="page-container">
       <h1>Reports Dashboard</h1>
 
-      <div>
-        <h3>Customers: {report.totalCustomers}</h3>
-        <h3>Products: {report.totalProducts}</h3>
-        <h3>Invoices: {report.totalInvoices}</h3>
-        <h3>Revenue: ₹{report.totalRevenue}</h3>
+      <div className="reports-grid">
+        <div className="card"><h3>Customers</h3><h2>{report.totalCustomers}</h2></div>
+        <div className="card"><h3>Products</h3><h2>{report.totalProducts}</h2></div>
+        <div className="card"><h3>Invoices</h3><h2>{report.totalInvoices}</h2></div>
+        <div className="card"><h3>Total Revenue</h3><h2>₹{report.totalRevenue}</h2></div>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={report.monthlyRevenue}>
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="revenue" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
+      <div className="charts-grid">
+        <div className="card">
+          <h3>Monthly Revenue</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={report.monthlyRevenue}>
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="revenue" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      <PieChart width={400} height={400}>
-        <Pie
-          data={report.topProducts}
-          dataKey="totalSold"
-          nameKey="product_name"
-          outerRadius={120}
-        >
-          {report.topProducts.map((_, index) => (
-            <Cell key={index} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-        <Legend />
-      </PieChart>
+        <div className="card">
+          <h3>Top Products</h3>
+          <ResponsiveContainer width="100%" height={320}>
+            <PieChart>
+              <Pie
+                data={report.topProducts || []}
+                dataKey="totalSold"
+                nameKey="product_name"
+                outerRadius={120}
+              >
+                {(report.topProducts || []).map((_, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3>Low Stock: {report.lowStockCount}</h3>
+      </div>
     </div>
   );
 }
