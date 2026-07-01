@@ -228,7 +228,7 @@
 // }
 
 // export default Subscription;
-const Razorpay = require("razorpay");
+// const Razorpay = require("razorpay");
 // const crypto = require("crypto");
 // const db = require("../config/db");
 
