@@ -504,3 +504,4 @@ exports.getPaymentSummary = async (req, res) => {
     });
   }
 };
+export default Subscription;
