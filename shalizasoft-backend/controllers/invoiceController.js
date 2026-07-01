@@ -127,9 +127,16 @@ exports.addInvoice = (req, res) => {
           company.phone || "",
           company.gst_number || "",
         ],
-        (err3, result2) => {
-          const invoiceId = result2.insertId;
+       
+(err3, result2) => {
 
+  if (err3) {
+    console.log("INSERT INVOICE ERROR:");
+    console.log(err3);
+    return res.status(500).json(err3);
+  }
+
+  const invoiceId = result2.insertId;
           const values = items.map((item) => [
             invoiceId,
             item.product_name,

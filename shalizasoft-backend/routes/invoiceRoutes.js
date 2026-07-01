@@ -36,7 +36,7 @@ router.post("/:id/send", authMiddleware, sendInvoice);
 // ==========================
 // PDF DOWNLOAD
 // ==========================
-router.get("/pdf/:id", authMiddleware, generateInvoicePDF);
+router.get("/:id/download", authMiddleware, generateInvoicePDF);
 
 // ==========================
 // PREMIUM TEST
