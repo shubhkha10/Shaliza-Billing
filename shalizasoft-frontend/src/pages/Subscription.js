@@ -227,40 +227,130 @@
 //   );
 // }
 
+// export default Subscription;   
+
+
+// import { useEffect, useState } from "react";
+// import API from "../config/api";
+// import "../assets/css/subscription.css";
+
+// function Subscription() {
+//   const token = localStorage.getItem("token");
+
+//   const [subscription, setSubscription] = useState({
+//     subscription_type: "FREE",
+//     subscription_expiry: null,
+//   });
+
+//   useEffect(() => {
+//     loadSubscription();
+//   }, []);
+
+//   const loadSubscription = async () => {
+//     try {
+//       const res = await API.get("/subscription/current", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       setSubscription(res.data);
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
+
+//   const buyPlan = async (plan) => {
+//     try {
+//       const { data } = await API.post(
+//         "/subscription/create-order",
+//         { plan },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       if (!window.Razorpay) {
+//         alert("Razorpay SDK not loaded");
+//         return;
+//       }
+
+//       const options = {
+//         key: data.key,
+//         order_id: data.id,
+//         amount: data.amount,
+//         currency: data.currency,
+
+//         name: "ShalizaSoft",
+//         description: `${plan} Plan`,
+
+//         handler: async function (response) {
+//           try {
+//             await API.post(
+//               "/subscription/verify-payment",
+//               {
+//                 razorpay_order_id: response.razorpay_order_id,
+//                 razorpay_payment_id: response.razorpay_payment_id,
+//                 razorpay_signature: response.razorpay_signature,
+//                 plan,
+//               },
+//               {
+//                 headers: {
+//                   Authorization: `Bearer ${token}`,
+//                 },
+//               }
+//             );
+
+//             alert("Payment Success");
+//             loadSubscription();
+//           } catch (err) {
+//             console.log(err);
+//           }
+//         },
+//       };
+
+//       const razorpay = new window.Razorpay(options);
+//       razorpay.open();
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h1>Subscription</h1>
+
+//       <p>Current Plan: {subscription.subscription_type}</p>
+
+//       <button onClick={() => buyPlan("MONTHLY")}>
+//         Monthly
+//       </button>
+
+//       <button onClick={() => buyPlan("YEARLY")}>
+//         Yearly
+//       </button>
+//     </div>
+//   );
+// }
+
 // export default Subscription;
-import { useEffect, useState } from "react";
+
+
+import { useState, useEffect } from "react";
 import API from "../config/api";
-import "../assets/css/subscription.css";
+import axios from "axios";
 
 function Subscription() {
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
 
-  const [subscription, setSubscription] = useState({
-    subscription_type: "FREE",
-    subscription_expiry: null,
-  });
-
-  useEffect(() => {
-    loadSubscription();
-  }, []);
-
-  const loadSubscription = async () => {
+  const createOrder = async (plan) => {
     try {
-      const res = await API.get("/subscription/current", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      setLoading(true);
 
-      setSubscription(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const buyPlan = async (plan) => {
-    try {
-      const { data } = await API.post(
+      const res = await API.post(
         "/subscription/create-order",
         { plan },
         {
@@ -270,64 +360,48 @@ function Subscription() {
         }
       );
 
-      if (!window.Razorpay) {
-        alert("Razorpay SDK not loaded");
-        return;
-      }
-
       const options = {
-        key: data.key,
-        order_id: data.id,
-        amount: data.amount,
-        currency: data.currency,
-
-        name: "ShalizaSoft",
-        description: `${plan} Plan`,
-
+        key: res.data.key,
+        amount: res.data.amount,
+        currency: "INR",
+        name: "Shaliza Billing",
+        order_id: res.data.id,
         handler: async function (response) {
-          try {
-            await API.post(
-              "/subscription/verify-payment",
-              {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                plan,
+          await API.post(
+            "/subscription/verify-payment",
+            {
+              ...response,
+              plan,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
               },
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
+            }
+          );
 
-            alert("Payment Success");
-            loadSubscription();
-          } catch (err) {
-            console.log(err);
-          }
+          alert("Payment Successful");
         },
       };
 
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      const razor = new window.Razorpay(options);
+      razor.open();
+
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
-      <h1>Subscription</h1>
-
-      <p>Current Plan: {subscription.subscription_type}</p>
-
-      <button onClick={() => buyPlan("MONTHLY")}>
-        Monthly
+      <button onClick={() => createOrder("MONTHLY")}>
+        Buy Monthly
       </button>
 
-      <button onClick={() => buyPlan("YEARLY")}>
-        Yearly
+      <button onClick={() => createOrder("YEARLY")}>
+        Buy Yearly
       </button>
     </div>
   );
